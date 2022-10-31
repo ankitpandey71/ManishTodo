@@ -1,10 +1,9 @@
 import React, { useCallback, useState } from "react";
+import { db } from "./pouchdb";
 import TodoList from "./TodoList";
 
 const TodoInput = () => {
   const [task, setTask] = useState("");
-
-  const [tasks, setTasks] = useState([]); // ["", "", ""]
 
   const handleTask = useCallback((e) => {
     setTask(e.target.value);
@@ -14,21 +13,22 @@ const TodoInput = () => {
     setTask("");
   }, []);
 
-  const handleSubmit = useCallback((e) => {
-    e.preventDefault();
-    setTasks((prev) => [task, ...prev]);
-    handleReset()
-  }, [task, handleReset]);
-
-  const handleDelete = useCallback((removeItem) => {
-    setTasks(prev => {
-        const copyArr = [...prev]
-        const filteredArr = copyArr.filter(item => item !== removeItem);
-        return filteredArr;
-    })
-  }, [])
-
-  console.log({ task, tasks });
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      try {
+        var response = await db.put({
+          _id: String(Math.random()),
+          title: task,
+        });
+        console.log(response);
+        handleReset();
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    [task, handleReset]
+  );
 
   return (
     <div>
@@ -40,7 +40,6 @@ const TodoInput = () => {
             required={true}
             className="border"
             placeholder="Add Task"
-            //
             value={task}
             onChange={handleTask}
           />
@@ -48,9 +47,9 @@ const TodoInput = () => {
           <button type="reset">RESET</button>
         </form>
       </div>
-      <TodoList items={tasks} onDelete={handleDelete}/>
+      <TodoList />
     </div>
   );
-};
+};;;;
 
 export default TodoInput;

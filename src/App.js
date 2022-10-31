@@ -1,12 +1,15 @@
 import React from 'react'
-import TodoInput from './TodoInput'
+// import SiteName from "./SiteName";
+import TodoInput from "./TodoInput";
 
 const App = () => {
   return (
     <div>
-      <TodoInput/>
+      {/* <SiteName /> */}
+      <TodoInput />
     </div>
-  )
-}
+  );
+};
+
 
 export default App
